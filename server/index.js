@@ -44,6 +44,24 @@ app.post(('/delete/:id'), (req, res) => {
     }
 })
 
+app.post(('/edit/:id'), (req, res) => {
+    try {
+        const data = JSON.parse(fs.readFileSync('./data.json', 'utf8'));
+        const newData = data.notes.map(item => {
+            if (item.id == req.params.id) {
+                item.title = req.body.title;
+                item.content = req.body.content;
+            }
+            return item;
+        })
+        fs.writeFileSync('./data.json', JSON.stringify({ notes: newData }));
+        res.send(newData);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+})
+
 
 app.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);

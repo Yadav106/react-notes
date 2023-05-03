@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { nanoid } from 'nanoid'
 import { FiDelete } from 'react-icons/fi'
+import { BsFillPenFill } from 'react-icons/bs'
 
 const App = () => {
 
@@ -58,7 +59,7 @@ const App = () => {
             <div className='flex items-center'>
               <h3 className='font-bold'>{note.title}</h3>
               <FiDelete 
-                className='ml-[100px] cursor-pointer text-red-500'
+                className='ml-[60px] cursor-pointer text-red-500'
                 onClick={() => {
                   fetch(`http://localhost:5001/delete/${note.id}`, {
                     method: 'POST'
@@ -69,6 +70,26 @@ const App = () => {
                     })
                     .catch(err => console.log(err))
                 }} />
+              <BsFillPenFill
+                className='ml-[20px] cursor-pointer text-blue-500'
+                onClick={() => {
+                  const title = prompt('Enter new title', note.title)
+                  const content = prompt('Enter new content', note.content)
+                  fetch(`http://localhost:5001/edit/${note.id}`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, content })
+                  })
+                    .then(res => res.json())
+                    .then(data => {
+                      setNotes(data)
+                    })
+                    .catch(err => console.log(err))
+                }}
+              />
+
             </div>
             <p className='overflow-y-scroll h-[170px]'>{note.content}</p>
           </div>
